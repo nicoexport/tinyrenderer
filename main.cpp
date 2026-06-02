@@ -1,5 +1,7 @@
 #include <cmath>
+#include <cstdint>
 #include <cstdlib>
+#include <ctime>
 #include <utility>
 #include "tgaimage.h"
 
@@ -33,11 +35,7 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
     }
 }
 
-int main(int argc, char** argv) {
-    constexpr int width  = 64;
-    constexpr int height = 64;
-    TGAImage framebuffer(width, height, TGAImage::RGB);
-
+void draw_triangle(TGAImage &framebuffer){
     int ax =  7, ay =  3;
     int bx = 12, by = 37;
     int cx = 62, cy = 53;
@@ -50,7 +48,29 @@ int main(int argc, char** argv) {
     framebuffer.set(ax, ay, white);
     framebuffer.set(bx, by, white);
     framebuffer.set(cx, cy, red);
+}
 
+void draw_random_lines(TGAImage &framebuffer, int width, int height){
+    std::srand(std::time({}));
+    int c = 255;
+    for (int i = 0; i < (1<<24); i++) {
+        int ax = rand()%width, ay = rand()%height;
+        int bx = rand()&width, by = rand()%height;
+        line(ax, ay, bx, by, framebuffer, { 
+            static_cast<std::uint8_t>(rand() % 255),
+            static_cast<std::uint8_t>(rand() % 255),
+            static_cast<std::uint8_t>(rand() % 255),
+            static_cast<std::uint8_t>(rand() % 255),
+        });
+    }
+}
+
+int main(int argc, char** argv) {
+    constexpr int width  = 64;
+    constexpr int height = 64;
+    TGAImage framebuffer(width, height, TGAImage::RGB);
+
+    draw_random_lines(framebuffer, width, height);
     framebuffer.write_tga_file("framebuffer.tga");
     return 0;
 }
