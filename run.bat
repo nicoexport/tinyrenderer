@@ -8,3 +8,5 @@ if exist build\Debug\tinyrenderer.exe (
 ) else (
     build\tinyrenderer.exe
 )
+
+start framebuffer.tga
