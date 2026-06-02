@@ -24,7 +24,7 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
     }
     
     int y = ay;
-    float error = 0;
+    int ierror = 0;
 
     for (int x = ax; x <= bx; x++) {
         float t = (x - ax) / static_cast<float>(bx-ax);
@@ -35,11 +35,9 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
             framebuffer.set(x, y, color);    
         }
 
-        error += std::abs(by - ay) / static_cast<float>(bx - ax);
-        if (error > .5) {
-            y += by > ay ? 1 : - 1;
-            error -= 1;
-        }
+        ierror += 2 * std::abs(by - ay); 
+        y += (by > ay ? 1 : -1) * (ierror > bx - ax);
+        ierror -= 2 * (bx-ax)   * (ierror > bx - ax);
     }
 }
 
